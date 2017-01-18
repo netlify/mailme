@@ -34,11 +34,15 @@ type Mailer struct {
 
 // Mail sends a templated mail. It will try to load the template from a URL, and
 // otherwise fall back to the default
-func (m *Mailer) Mail(to, subjectTemplate, templateURL, defaultTemplate string, templateData map[string]interface{}) error {
+func (m *Mailer) Mail(to, subjectTemplate, templateURL, defaultTemplate string, templateData map[string]interface{}, funcMap map[string]interface{}) error {
 	tmp, err := template.New("Subject").Parse(subjectTemplate)
 	if err != nil {
 		return err
 	}
+	if funcMap != nil {
+		tmp = tmp.Funcs(funcMap)
+	}
+
 	subject := &bytes.Buffer{}
 	err = tmp.Execute(subject, templateData)
 	if err != nil {
