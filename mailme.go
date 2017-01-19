@@ -20,8 +20,6 @@ const TemplateRetries = 3
 // TemplateExpiration is the time period that the template will be cached for
 const TemplateExpiration = 10 * time.Second
 
-var templates = TemplateCache{templates: map[string]*MailTemplate{}}
-
 // Mailer lets MailMe send templated mails
 type Mailer struct {
 	From    string
@@ -30,16 +28,21 @@ type Mailer struct {
 	User    string
 	Pass    string
 	BaseURL string
+	FuncMap template.FuncMap
+	cache   *TemplateCache
 }
 
 // Mail sends a templated mail. It will try to load the template from a URL, and
 // otherwise fall back to the default
-func (m *Mailer) Mail(to, subjectTemplate, templateURL, defaultTemplate string, templateData map[string]interface{}, funcMap map[string]interface{}) error {
-	if funcMap == nil {
-		funcMap = map[string]interface{}{}
+func (m *Mailer) Mail(to, subjectTemplate, templateURL, defaultTemplate string, templateData map[string]interface{}) error {
+	if m.FuncMap == nil {
+		m.FuncMap = map[string]interface{}{}
+	}
+	if m.cache == nil {
+		m.cache = &TemplateCache{templates: map[string]*MailTemplate{}, funcMap: m.FuncMap}
 	}
 
-	tmp, err := template.New("Subject").Funcs(funcMap).Parse(subjectTemplate)
+	tmp, err := template.New("Subject").Funcs(template.FuncMap(m.FuncMap)).Parse(subjectTemplate)
 	if err != nil {
 		return err
 	}
@@ -73,6 +76,7 @@ type MailTemplate struct {
 type TemplateCache struct {
 	templates map[string]*MailTemplate
 	mutex     sync.Mutex
+	funcMap   template.FuncMap
 }
 
 func (t *TemplateCache) Get(url string) (*template.Template, error) {
@@ -88,7 +92,7 @@ func (t *TemplateCache) Get(url string) (*template.Template, error) {
 }
 
 func (t *TemplateCache) Set(key, value string, expirationTime time.Duration) (*template.Template, error) {
-	parsed, err := template.New(key).Parse(value)
+	parsed, err := template.New(key).Funcs(t.funcMap).Parse(value)
 	if err != nil {
 		return nil, err
 	}
@@ -139,18 +143,18 @@ func (m *Mailer) MailBody(url string, defaultTemplate string, data map[string]in
 		} else {
 			absoluteURL = m.BaseURL + url
 		}
-		temp, err = templates.Get(absoluteURL)
+		temp, err = m.cache.Get(absoluteURL)
 		if err != nil {
 			log.Printf("Error loading template from %v: %v\n", url, err)
 		}
 	}
 
 	if temp == nil {
-		cached, ok := templates.templates[url]
+		cached, ok := m.cache.templates[url]
 		if ok {
 			temp = cached.tmp
 		} else {
-			temp, err = templates.Set(url, defaultTemplate, 0)
+			temp, err = m.cache.Set(url, defaultTemplate, 0)
 			if err != nil {
 				return "", err
 			}
