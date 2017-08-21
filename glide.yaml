@@ -1,0 +1,4 @@
+package: github.com/netlify/mailme
+import:
+- package: gopkg.in/gomail.v2
+  version: 2.0.0
