@@ -133,6 +133,13 @@ func (t *TemplateCache) fetchTemplate(url string, triesLeft int) (string, error)
 }
 
 func (m *Mailer) MailBody(url string, defaultTemplate string, data map[string]interface{}) (string, error) {
+	if m.FuncMap == nil {
+		m.FuncMap = map[string]interface{}{}
+	}
+	if m.cache == nil {
+		m.cache = &TemplateCache{templates: map[string]*MailTemplate{}, funcMap: m.FuncMap}
+	}
+
 	var temp *template.Template
 	var err error
 
