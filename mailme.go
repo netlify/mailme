@@ -6,12 +6,15 @@ import (
 	"html/template"
 	"io/ioutil"
 	"log"
+	"net"
 	"net/http"
 	"strings"
 	"sync"
 	"time"
 
 	"gopkg.in/gomail.v2"
+
+	nfhttp "github.com/netlify/netlify-commons/http"
 )
 
 // TemplateRetries is the amount of time MailMe will try to fetch a URL before giving up
@@ -108,7 +111,21 @@ func (t *TemplateCache) Set(key, value string, expirationTime time.Duration) (*t
 }
 
 func (t *TemplateCache) fetchTemplate(url string, triesLeft int) (string, error) {
-	resp, err := http.Get(url)
+	client := http.Client{
+		Transport: &http.Transport{
+			DialContext: nfhttp.SafeDialContext((&net.Dialer{
+				Timeout:   30 * time.Second,
+				KeepAlive: 30 * time.Second,
+				DualStack: true,
+			}).DialContext),
+			MaxIdleConns:          100,
+			IdleConnTimeout:       90 * time.Second,
+			TLSHandshakeTimeout:   10 * time.Second,
+			ExpectContinueTimeout: 1 * time.Second,
+		},
+	}
+
+	resp, err := client.Get(url)
 	if err != nil && triesLeft > 0 {
 		return t.fetchTemplate(url, triesLeft-1)
 	}
