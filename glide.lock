@@ -1,8 +1,18 @@
-hash: 6ad4f3810e58bb416a873f142eeaf25deb574eaa080a4d4eacf9b7bf664f979e
-updated: 2019-05-25T15:15:09.654431-07:00
+hash: b0f6dc907198935bbfa9d2d36e35b55707854706a0b09e6a01604b7183c92d36
+updated: 2019-05-31T09:20:17.42323-07:00
 imports:
+- name: github.com/konsorten/go-windows-terminal-sequences
+  version: f55edac94c9bbba5d6182a4be46d86a2c9b5b50e
 - name: github.com/netlify/netlify-commons
-  version: b301cf8da00d21c4487264939a55c527ef74e522
+  version: 555ac538b49205d105f266c64b8f15eeaed44788
+  subpackages:
+  - http
+- name: github.com/sirupsen/logrus
+  version: 839c75faf7f98a33d445d181f3018b5c3409a45e
+- name: golang.org/x/sys
+  version: c432e742b0af385916e013f6a34e9e73d139cf82
+  subpackages:
+  - unix
 - name: gopkg.in/alexcesaro/quotedprintable.v3
   version: 2caba252f4dc53eaf6b553000885530023f54623
 - name: gopkg.in/gomail.v2
