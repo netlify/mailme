@@ -10,6 +10,7 @@ require (
 	github.com/netlify/netlify-commons v0.27.0
 	github.com/onsi/ginkgo v1.8.0 // indirect
 	github.com/onsi/gomega v1.5.0 // indirect
+	github.com/sirupsen/logrus v1.4.1
 	gopkg.in/airbrake/gobrake.v2 v2.0.9 // indirect
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc
 	gopkg.in/gemnasium/logrus-airbrake-hook.v2 v2.1.2 // indirect
