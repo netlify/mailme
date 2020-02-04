@@ -78,6 +78,8 @@ github.com/netlify/netlify-commons v0.15.1 h1:oibvfGrbP7Y4dBue2NpGc/SjhcBlXQ3Oqp
 github.com/netlify/netlify-commons v0.15.1/go.mod h1:5v547Bbgy/9eOPrzF85YsWcTJFVTcc5C1XewAEr9N9w=
 github.com/netlify/netlify-commons v0.25.0 h1:kdOxnTrDnF18s2VEuqJI013PzWJAJYLGrmX/qud0ELA=
 github.com/netlify/netlify-commons v0.25.0/go.mod h1:xZH7auZrc/N/ZKS9BRO74yNf8i9LitXq1h6JVFZ2jTc=
+github.com/netlify/netlify-commons v0.27.0 h1:c4nzbG8dCwk2JkUFGyfIcsY68ddcT/pJsHWF5jdlKaw=
+github.com/netlify/netlify-commons v0.27.0/go.mod h1:xZH7auZrc/N/ZKS9BRO74yNf8i9LitXq1h6JVFZ2jTc=
 github.com/onsi/ginkgo v1.6.0/go.mod h1:lLunBs/Ym6LB5Z9jYTR76FiuTmxDTDusOGeTQH+WWjE=
 github.com/onsi/ginkgo v1.8.0/go.mod h1:lLunBs/Ym6LB5Z9jYTR76FiuTmxDTDusOGeTQH+WWjE=
 github.com/onsi/gomega v1.5.0/go.mod h1:ex+gbHU/CVuBBDIJjb2X0qEXbFg53c61hWP/1CpauHY=
