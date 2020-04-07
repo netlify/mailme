@@ -62,6 +62,8 @@ github.com/nats-io/stan.go v0.4.5/go.mod h1:Ji7mK6gRZJSH1nc3ZJH6vi7zn/QnZhpR9Arm
 github.com/nats-io/stan.go v0.5.0/go.mod h1:dYqB+vMN3C2F9pT1FRQpg9eHbjPj6mP0yYuyBNuXHZE=
 github.com/netlify/netlify-commons v0.27.0 h1:c4nzbG8dCwk2JkUFGyfIcsY68ddcT/pJsHWF5jdlKaw=
 github.com/netlify/netlify-commons v0.27.0/go.mod h1:xZH7auZrc/N/ZKS9BRO74yNf8i9LitXq1h6JVFZ2jTc=
+github.com/netlify/netlify-commons v0.32.0 h1:IgpqedBa6aFrc+daRgGZ+SmU9eBXlDXzKSAjevWmshM=
+github.com/netlify/netlify-commons v0.32.0/go.mod h1:xZH7auZrc/N/ZKS9BRO74yNf8i9LitXq1h6JVFZ2jTc=
 github.com/opentracing/opentracing-go v1.1.0/go.mod h1:UkNAQd3GIcIGf0SeVgPpRdFStlNbqXla1AfSYxPUl2o=
 github.com/pascaldekloe/goe v0.1.0/go.mod h1:lzWF7FIEvWOWxwDKqyGYQf6ZUaNfKdP144TG7ZOy1lc=
 github.com/pelletier/go-toml v1.2.0/go.mod h1:5z9KED0ma1S8pY6P1sdut58dfprrGBbd/94hg7ilaic=
