@@ -60,8 +60,6 @@ github.com/nats-io/nkeys v0.0.2/go.mod h1:dab7URMsZm6Z/jp9Z5UGa87Uutgc2mVpXLC4B7
 github.com/nats-io/nuid v1.0.1/go.mod h1:19wcPz3Ph3q0Jbyiqsd0kePYG7A95tJPxeL+1OSON2c=
 github.com/nats-io/stan.go v0.4.5/go.mod h1:Ji7mK6gRZJSH1nc3ZJH6vi7zn/QnZhpR9Arm4iuzsUQ=
 github.com/nats-io/stan.go v0.5.0/go.mod h1:dYqB+vMN3C2F9pT1FRQpg9eHbjPj6mP0yYuyBNuXHZE=
-github.com/netlify/netlify-commons v0.27.0 h1:c4nzbG8dCwk2JkUFGyfIcsY68ddcT/pJsHWF5jdlKaw=
-github.com/netlify/netlify-commons v0.27.0/go.mod h1:xZH7auZrc/N/ZKS9BRO74yNf8i9LitXq1h6JVFZ2jTc=
 github.com/netlify/netlify-commons v0.32.0 h1:IgpqedBa6aFrc+daRgGZ+SmU9eBXlDXzKSAjevWmshM=
 github.com/netlify/netlify-commons v0.32.0/go.mod h1:xZH7auZrc/N/ZKS9BRO74yNf8i9LitXq1h6JVFZ2jTc=
 github.com/opentracing/opentracing-go v1.1.0/go.mod h1:UkNAQd3GIcIGf0SeVgPpRdFStlNbqXla1AfSYxPUl2o=
