@@ -6,7 +6,6 @@ import (
 	"html/template"
 	"io/ioutil"
 	"log"
-	"net"
 	"net/http"
 	"strings"
 	"sync"
@@ -15,6 +14,7 @@ import (
 	"gopkg.in/gomail.v2"
 
 	nfhttp "github.com/netlify/netlify-commons/http"
+	"github.com/sirupsen/logrus"
 )
 
 // TemplateRetries is the amount of time MailMe will try to fetch a URL before giving up
@@ -33,6 +33,7 @@ type Mailer struct {
 	BaseURL string
 	FuncMap template.FuncMap
 	cache   *TemplateCache
+	Logger  logrus.FieldLogger
 }
 
 // Mail sends a templated mail. It will try to load the template from a URL, and
@@ -42,7 +43,11 @@ func (m *Mailer) Mail(to, subjectTemplate, templateURL, defaultTemplate string, 
 		m.FuncMap = map[string]interface{}{}
 	}
 	if m.cache == nil {
-		m.cache = &TemplateCache{templates: map[string]*MailTemplate{}, funcMap: m.FuncMap}
+		m.cache = &TemplateCache{
+			templates: map[string]*MailTemplate{},
+			funcMap:   m.FuncMap,
+			logger:    m.Logger,
+		}
 	}
 
 	tmp, err := template.New("Subject").Funcs(template.FuncMap(m.FuncMap)).Parse(subjectTemplate)
@@ -80,6 +85,7 @@ type TemplateCache struct {
 	templates map[string]*MailTemplate
 	mutex     sync.Mutex
 	funcMap   template.FuncMap
+	logger    logrus.FieldLogger
 }
 
 func (t *TemplateCache) Get(url string) (*template.Template, error) {
@@ -111,20 +117,7 @@ func (t *TemplateCache) Set(key, value string, expirationTime time.Duration) (*t
 }
 
 func (t *TemplateCache) fetchTemplate(url string, triesLeft int) (string, error) {
-	client := http.Client{
-		Transport: &http.Transport{
-			DialContext: nfhttp.SafeDialContext((&net.Dialer{
-				Timeout:   30 * time.Second,
-				KeepAlive: 30 * time.Second,
-				DualStack: true,
-			}).DialContext),
-			MaxIdleConns:          100,
-			IdleConnTimeout:       90 * time.Second,
-			TLSHandshakeTimeout:   10 * time.Second,
-			ExpectContinueTimeout: 1 * time.Second,
-		},
-	}
-
+	client := nfhttp.SafeHTTPClient(http.DefaultClient, t.logger)
 	resp, err := client.Get(url)
 	if err != nil && triesLeft > 0 {
 		return t.fetchTemplate(url, triesLeft-1)
