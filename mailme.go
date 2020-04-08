@@ -34,6 +34,7 @@ type Mailer struct {
 	BaseURL string
 	FuncMap template.FuncMap
 	cache   *TemplateCache
+	Logger  logrus.FieldLogger
 }
 
 // Mail sends a templated mail. It will try to load the template from a URL, and
@@ -43,7 +44,11 @@ func (m *Mailer) Mail(to, subjectTemplate, templateURL, defaultTemplate string, 
 		m.FuncMap = map[string]interface{}{}
 	}
 	if m.cache == nil {
-		m.cache = &TemplateCache{templates: map[string]*MailTemplate{}, funcMap: m.FuncMap}
+		m.cache = &TemplateCache{
+			templates: map[string]*MailTemplate{},
+			funcMap:   m.FuncMap,
+			logger:    m.Logger,
+		}
 	}
 
 	tmp, err := template.New("Subject").Funcs(template.FuncMap(m.FuncMap)).Parse(subjectTemplate)
@@ -81,6 +86,7 @@ type TemplateCache struct {
 	templates map[string]*MailTemplate
 	mutex     sync.Mutex
 	funcMap   template.FuncMap
+	logger    logrus.FieldLogger
 }
 
 func (t *TemplateCache) Get(url string) (*template.Template, error) {
@@ -125,7 +131,7 @@ func (t *TemplateCache) fetchTemplate(url string, triesLeft int) (string, error)
 			ExpectContinueTimeout: 1 * time.Second,
 		},
 	}
-	client = nfhttp.SafeHTTPClient(client, logrus.New())
+	client = nfhttp.SafeHTTPClient(client, t.logger)
 	resp, err := client.Get(url)
 	if err != nil && triesLeft > 0 {
 		return t.fetchTemplate(url, triesLeft-1)
