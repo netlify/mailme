@@ -6,7 +6,6 @@ import (
 	"html/template"
 	"io/ioutil"
 	"log"
-	"net"
 	"net/http"
 	"strings"
 	"sync"
@@ -118,20 +117,7 @@ func (t *TemplateCache) Set(key, value string, expirationTime time.Duration) (*t
 }
 
 func (t *TemplateCache) fetchTemplate(url string, triesLeft int) (string, error) {
-	client := &http.Client{
-		Transport: &http.Transport{
-			DialContext: (&net.Dialer{
-				Timeout:   30 * time.Second,
-				KeepAlive: 30 * time.Second,
-				DualStack: true,
-			}).DialContext,
-			MaxIdleConns:          100,
-			IdleConnTimeout:       90 * time.Second,
-			TLSHandshakeTimeout:   10 * time.Second,
-			ExpectContinueTimeout: 1 * time.Second,
-		},
-	}
-	client = nfhttp.SafeHTTPClient(client, t.logger)
+	client := nfhttp.SafeHTTPClient(http.DefaultClient, t.logger)
 	resp, err := client.Get(url)
 	if err != nil && triesLeft > 0 {
 		return t.fetchTemplate(url, triesLeft-1)
