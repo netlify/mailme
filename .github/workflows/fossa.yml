@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-      - fix-fossa
 
 defaults:
   run:
@@ -25,9 +24,9 @@ jobs:
     - name: Configuration
       run: |-
         sed -i "${line_number}s|.*|  project: git@github.com:${GITHUB_REPOSITORY}.git|" .fossa.yml
-        cat .fossa.yml
         sed -i '$d' .fossa.yml
         echo -e "analyze:\n  modules:\n    - name: main\n      type: go\n      target: github.com/netlify/mailme\n      path: ./" >> .fossa.yml
+        cat .fossa.yml
     - name: Upload dependencies
       run: fossa analyze --debug
       env:
