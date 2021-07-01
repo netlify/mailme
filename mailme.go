@@ -25,15 +25,16 @@ const TemplateExpiration = 10 * time.Second
 
 // Mailer lets MailMe send templated mails
 type Mailer struct {
-	From    string
-	Host    string
-	Port    int
-	User    string
-	Pass    string
-	BaseURL string
-	FuncMap template.FuncMap
-	cache   *TemplateCache
-	Logger  logrus.FieldLogger
+	From       string
+	Host       string
+	Port       int
+	User       string
+	Pass       string
+	BaseURL    string
+	SenderName string
+	FuncMap    template.FuncMap
+	cache      *TemplateCache
+	Logger     logrus.FieldLogger
 }
 
 // Mail sends a templated mail. It will try to load the template from a URL, and
@@ -66,7 +67,7 @@ func (m *Mailer) Mail(to, subjectTemplate, templateURL, defaultTemplate string, 
 	}
 
 	mail := gomail.NewMessage()
-	mail.SetHeader("From", m.From)
+	mail.SetHeader("From", mail.FormatAddress(m.From, m.SenderName))
 	mail.SetHeader("To", to)
 	mail.SetHeader("Subject", subject.String())
 	mail.SetBody("text/html", body)
