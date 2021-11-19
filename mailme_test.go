@@ -78,5 +78,5 @@ func TestInvalidVariable(t *testing.T) {
     data, err := cache.Get("http://www.example.com/templates/invalid")
 
     st.Reject(t, data, invalidTemplateBody)
-    st.Reject(t, err, nil)
+    st.Expect(t, err, nil)
 }
