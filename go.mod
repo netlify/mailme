@@ -1,4 +1,4 @@
-module github.com/netlify/mailme
+module github.com/MalinYamato/mailme
 
 go 1.13
 
