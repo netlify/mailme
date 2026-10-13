@@ -31,6 +31,10 @@ type Mailer struct {
 	User    string
 	Pass    string
 	BaseURL string
+	// Headers are added to every mail sent. Only names starting with "X-", in any case,
+	// are used, so they can't conflict with the headers Mail and gomail set. Entries with
+	// an empty value or an invalid name are skipped too.
+	Headers map[string]string
 	FuncMap template.FuncMap
 	cache   *TemplateCache
 	Logger  logrus.FieldLogger
@@ -66,6 +70,12 @@ func (m *Mailer) Mail(to, subjectTemplate, templateURL, defaultTemplate string, 
 	}
 
 	mail := gomail.NewMessage()
+	for name, value := range m.Headers {
+		if value == "" || !isCustomHeader(name) || !isValidHeaderName(name) {
+			continue
+		}
+		mail.SetHeader(name, value)
+	}
 	mail.SetHeader("From", m.From)
 	mail.SetHeader("To", to)
 	mail.SetHeader("Subject", subject.String())
@@ -74,6 +84,28 @@ func (m *Mailer) Mail(to, subjectTemplate, templateURL, defaultTemplate string, 
 	dial := gomail.NewPlainDialer(m.Host, m.Port, m.User, m.Pass)
 	return dial.DialAndSend(mail)
 
+}
+
+// isCustomHeader reports whether name starts with "X-", compared case-insensitively.
+// None of the headers Mail or gomail write start with it, and neither do Sender, Cc
+// and Bcc, which gomail uses to pick who the mail is sent from and to.
+func isCustomHeader(name string) bool {
+	return len(name) > len("X-") && strings.EqualFold(name[:len("X-")], "X-")
+}
+
+// isValidHeaderName reports whether name is a valid RFC 5322 field name: printable
+// ASCII other than a colon. gomail writes names as given, so a name with a CR or LF
+// could add header lines of its own.
+func isValidHeaderName(name string) bool {
+	if name == "" {
+		return false
+	}
+	for i := 0; i < len(name); i++ {
+		if c := name[i]; c < '!' || c > '~' || c == ':' {
+			return false
+		}
+	}
+	return true
 }
 
 type MailTemplate struct {
